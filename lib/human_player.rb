@@ -16,8 +16,7 @@ class HumanPlayer
   attr_reader :name
 
   def generate_code
-    puts "\nAlright #{name}, create a four-letter code using any combination of these colours:
-      #{AllowedColours::ALLOWED_COLOURS_FULL.join(', ')}\n"
+    puts "\nAlright #{name}, create a four-letter code using any combination of these colours!\n"
 
     ask_for_input
   end
@@ -37,6 +36,20 @@ class HumanPlayer
 
       puts "\nInvalid input Your input must be four letters long and only include the given colours.\nTry again:"
     end
+  end
+
+  def give_feedback(code_given)
+    puts "Your secret code is #{code_given.join}"
+    puts 'For every letter (colour) that is in the right position, place down a black peg.'
+    puts 'How many black pegs will you place?'
+    black_pegs = gets.chomp.to_i
+
+    print 'For any other letter (colour) that is in the secret code but not in the right position,'
+    puts 'place down a white peg'
+    puts 'How many white pegs will you place?'
+    white_pegs = gets.chomp.to_i
+
+    [black_pegs, white_pegs]
   end
 
   def to_s
