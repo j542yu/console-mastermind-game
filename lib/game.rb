@@ -30,7 +30,7 @@ class Game
       guess = code_guesser.make_guess
       display_guess(guess)
 
-      pegs = code_giver.give_feedback(code_given, guess)
+      pegs = ask_for_feedback(code_given, guess)
       display_feedback(pegs)
 
       black_pegs = pegs[0]
@@ -46,16 +46,32 @@ class Game
     puts "\n#{code_guesser.to_s.capitalize} guesses the code is #{guess.join}"
   end
 
+  def ask_for_feedback(code_given, guess)
+    if code_giver.instance_of?(ComputerPlayer)
+      code_giver.give_feedback(code_given, guess)
+    else
+      code_giver.give_feedback(code_given)
+    end
+  end
+
   def display_feedback(pegs)
+    if code_guesser.instance_of?(HumanPlayer)
+      display_computer_feedback(pegs)
+    else
+      code_guesser.store_feedback(pegs)
+    end
+  end
+
+  def display_computer_feedback(pegs)
     black_pegs = pegs[0]
     white_pegs = pegs[1]
-    puts "#{code_giver.to_s.capitalize} places down #{black_pegs} black peg(s) and #{white_pegs} white peg(s)"
+    puts "The computer places down #{black_pegs} black peg(s) and #{white_pegs} white peg(s)"
   end
 
   def start_game
     print "\nLet's start the game! #{code_giver.to_s.capitalize} will "
     print "create a secret code and #{code_guesser} must "
-    print "guess it in #{NumberOfRounds::MAX_ROUNDS} tries or less :>"
+    puts "guess it in #{NumberOfRounds::MAX_ROUNDS} tries or less :>"
     puts "The available colours are #{AllowedColours::ALLOWED_COLOURS_FULL.join(', ')}"
   end
 
