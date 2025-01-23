@@ -6,10 +6,10 @@
 # The player either creates a code and gives feedback on guesses as
 # a code giver, or guesses code until 12 turns have been exhausted
 class HumanPlayer
-  include AllowedColours
+  include GameConstants
 
   def initialize
-    puts 'Good greetings player, who are you?'
+    print "\nGood greetings player, who are you?\n=> "
     @name = gets.chomp
   end
 
@@ -18,20 +18,20 @@ class HumanPlayer
   def generate_code
     puts "\nAlright #{name}, create a four-letter code using any combination of these colours!\n"
 
-    ask_for_input
+    ask_for_colour_input
   end
 
   def make_guess
     puts "\nMake your guess!"
-    ask_for_input
+    ask_for__colour_input
   end
 
-  def ask_for_input
+  def ask_for_colour_input
     loop do
       print '=> '
       code = gets.chomp.upcase.split('')
 
-      is_valid_code = code.all? { |colour| AllowedColours::ALLOWED_COLOURS.include?(colour) } && code.length == 4
+      is_valid_code = code.all? { |colour| COLOURS.include?(colour) } && code.length == 4
       return code if is_valid_code
 
       puts "\nInvalid input Your input must be four letters long and only include the given colours.\nTry again:"
@@ -42,14 +42,23 @@ class HumanPlayer
     puts "Your secret code is #{code_given.join}"
     puts 'For every letter (colour) that is in the right position, place down a black peg.'
     puts 'How many black pegs will you place?'
-    black_pegs = gets.chomp.to_i
+    black_pegs = ask_for_num_input
 
-    print 'For any other letter (colour) that is in the secret code but not in the right position,'
+    print 'For any other letter (colour) that is in the secret code but not in the right position, '
     puts 'place down a white peg'
     puts 'How many white pegs will you place?'
-    white_pegs = gets.chomp.to_i
+    white_pegs = ask_for_num_input
 
     [black_pegs, white_pegs]
+  end
+
+  def ask_for_num_input
+    input = gets.chomp
+    until %(0 1 2 3 4).include?(input)
+      puts "\nInvalid feedback. Please enter an integer from 0 to 4"
+      input = gets.chomp
+    end
+    input.to_i
   end
 
   def to_s
