@@ -38,7 +38,7 @@ class HumanPlayer
     end
   end
 
-  def give_feedback(code_given)
+  def give_feedback(code_given) # rubocop:disable Metrics/MethodLength
     puts "Your secret code is #{code_given.join}"
     puts 'For every letter (colour) that is in the right position, place down a black peg.'
     puts 'How many black pegs will you place?'
@@ -48,6 +48,12 @@ class HumanPlayer
     puts 'place down a white peg'
     puts 'How many white pegs will you place?'
     white_pegs = ask_for_num_input
+
+    while black_pegs + white_pegs > 4
+      puts "\nHmm...There are at most 4 pegs in total. Please check your feedback and try again!"
+      black_pegs = ask_for_num_input
+      white_pegs = ask_for_num_input
+    end
 
     [black_pegs, white_pegs]
   end
