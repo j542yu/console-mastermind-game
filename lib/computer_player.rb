@@ -5,26 +5,28 @@
 # This class handles both generating the code and guessing
 # the code depending on what role the human wants to play
 class ComputerPlayer
-  include AllowedColours
+  include GameConstants
 
   def initialize
     @previous_guess = nil
     @previous_guess_feedback = nil
-    @possible_codes = AllowedColours::ALLOWED_COLOURS.repeated_permutation(4).to_a
+    @possible_codes = COLOURS.repeated_permutation(4).to_a
   end
 
   def generate_code
-    AllowedColours::ALLOWED_COLOURS.sample(4)
+    COLOURS.sample(4)
   end
 
-  def give_feedback(correct_code, guess)
+  def give_feedback(correct_code, guess) # rubocop:disable Metrics/MethodLength
     black_pegs = 0
     white_pegs = 0
+    correct_code_copy = correct_code.dup
 
     guess.each_with_index do |colour, idx|
-      if correct_code[idx] == colour
+      if correct_code_copy[idx] == colour
         black_pegs += 1
-      elsif correct_code.include?(colour)
+        correct_code_copy[idx] = nil
+      elsif correct_code_copy.include?(colour)
         white_pegs += 1
       end
     end
@@ -32,19 +34,17 @@ class ComputerPlayer
     [black_pegs, white_pegs]
   end
 
-  # uses Donald Knuth's algorithm
+  # uses Swaszek algorithm
   def make_guess
     is_first_guess = @previous_guess.nil?
 
     if is_first_guess
-      @previous_guess = [
-        AllowedColours::ALLOWED_COLOURS[0], AllowedColours::ALLOWED_COLOURS[0],
-        AllowedColours::ALLOWED_COLOURS[1], AllowedColours::ALLOWED_COLOURS[1]
-      ]
+      @previous_guess = [COLOURS[0], COLOURS[0], COLOURS[1], COLOURS[1]]
     else
       remove_impossible_codes
-      # find_best_guess
+      @previous_guess = @possible_codes[0]
     end
+    @possible_codes.delete(@previous_guess) # returns @previous_guess
   end
 
   def store_feedback(pegs)
@@ -52,17 +52,8 @@ class ComputerPlayer
   end
 
   def remove_impossible_codes
-    actual_black_pegs = @previous_guess_feedback[0]
-    actual_white_pegs = @previous_guess_feedback[1]
-
-    @possible_codes.each do |possibility|
-      possible_pegs = give_feedback(possibility, @previous_guess)
-      possible_black_pegs = possible_pegs[0]
-      possible_white_pegs = possible_pegs[1]
-
-      unless actual_black_pegs == possible_black_pegs && actual_white_pegs == possible_white_pegs
-        @possible_codes.delete(possibility)
-      end
+    @possible_codes.select! do |possibility|
+      @previous_guess_feedback == give_feedback(possibility, @previous_guess)
     end
   end
 
