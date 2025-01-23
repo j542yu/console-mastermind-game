@@ -23,7 +23,7 @@ class HumanPlayer
 
   def make_guess
     puts "\nMake your guess!"
-    ask_for__colour_input
+    ask_for_colour_input
   end
 
   def ask_for_colour_input
@@ -53,12 +53,13 @@ class HumanPlayer
   end
 
   def ask_for_num_input
-    input = gets.chomp
-    until %(0 1 2 3 4).include?(input)
-      puts "\nInvalid feedback. Please enter an integer from 0 to 4"
+    loop do
+      print '=> '
       input = gets.chomp
+      return input.to_i if %(0 1 2 3 4).include?(input)
+
+      puts "\nInvalid feedback. Please enter an integer from 0 to 4"
     end
-    input.to_i
   end
 
   def to_s
