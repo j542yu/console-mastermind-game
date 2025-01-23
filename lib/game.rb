@@ -8,9 +8,8 @@
 #
 # The game continues until the code guesser guesses the correct code, or the guesser has exhausted
 # the number of max rounds
-class Game
-  include NumberOfRounds
-  include AllowedColours
+class MastermindGame
+  include GameConstants
 
   def initialize(code_giver_class, code_guesser_class)
     @code_giver = code_giver_class.new
@@ -21,6 +20,7 @@ class Game
 
   def play # rubocop:disable Metrics/MethodLength
     rounds_played = 0
+    black_pegs = 0
     start_game
     code_given = code_giver.generate_code
 
@@ -28,6 +28,8 @@ class Game
       rounds_played += 1
 
       guess = code_guesser.make_guess
+      break if guess.nil?
+
       display_guess(guess)
 
       pegs = ask_for_feedback(code_given, guess)
@@ -35,11 +37,9 @@ class Game
 
       black_pegs = pegs[0]
 
-      if black_pegs == 4 || rounds_played == NumberOfRounds::MAX_ROUNDS
-        end_game(black_pegs, rounds_played)
-        break
-      end
+      break if black_pegs == 4 || rounds_played == MAX_ROUNDS
     end
+    end_game(black_pegs, rounds_played)
   end
 
   def display_guess(guess)
@@ -71,16 +71,18 @@ class Game
   def start_game
     print "\nLet's start the game! #{code_giver.to_s.capitalize} will "
     print "create a secret code and #{code_guesser} must "
-    puts "guess it in #{NumberOfRounds::MAX_ROUNDS} tries or less :>"
-    puts "The available colours are #{AllowedColours::ALLOWED_COLOURS_FULL.join(', ')}"
+    puts "guess it in #{MAX_ROUNDS} tries or less :>"
+    puts "The available colours are #{COLOURS_FULL.join(', ')}"
   end
 
   def end_game(black_pegs, rounds_played)
     print "\nGame over! "
     if black_pegs == 4
-      puts "#{code_guesser.to_s.capitalize} guessed the correct code!"
-    elsif rounds_played == NumberOfRounds::MAX_ROUNDS
+      puts "#{code_guesser.to_s.capitalize} guessed the correct code in #{rounds_played} rounds."
+    elsif rounds_played == MAX_ROUNDS
       puts "#{code_guesser.to_s.capitalize} has exhausted all their chances with incorrect guesses"
+    else
+      puts "The computer thinks you made a mistake giving feedback... There's no possible correct answer! Byebye :("
     end
   end
 end
