@@ -3,7 +3,7 @@
 require_relative 'lib/constants'
 require_relative 'lib/human_player'
 require_relative 'lib/computer_player'
-require_relative 'lib/mastermind_game'
+require_relative 'lib/game'
 
 print "Welcome to Mastermind!\n\n"
 print 'In this game, one player creates a code and the '
