@@ -22,7 +22,7 @@ class MastermindGame
     rounds_played = 0
     black_pegs = 0
     start_game
-    code_given = code_giver.generate_code
+    correct_code = code_giver.generate_code
 
     loop do
       rounds_played += 1
@@ -30,27 +30,28 @@ class MastermindGame
       guess = code_guesser.make_guess
       break if guess.nil?
 
-      display_guess(guess)
+      display_guess(guess, rounds_played)
 
-      pegs = ask_for_feedback(code_given, guess)
+      pegs = ask_for_feedback(correct_code, guess)
       display_feedback(pegs)
 
       black_pegs = pegs[0]
 
       break if black_pegs == 4 || rounds_played == MAX_ROUNDS
     end
-    end_game(black_pegs, rounds_played)
+    end_game(black_pegs, rounds_played, correct_code)
   end
 
-  def display_guess(guess)
-    puts "\n#{code_guesser.to_s.capitalize} guesses the code is #{guess.join}"
+  def display_guess(guess, rounds_played)
+    puts "\nAttempt #{rounds_played}:"
+    puts "#{code_guesser.to_s.capitalize} guesses the code is #{guess.join}"
   end
 
-  def ask_for_feedback(code_given, guess)
+  def ask_for_feedback(correct_code, guess)
     if code_giver.instance_of?(ComputerPlayer)
-      code_giver.give_feedback(code_given, guess)
+      code_giver.give_feedback(correct_code, guess)
     else
-      code_giver.give_feedback(code_given)
+      code_giver.give_feedback(correct_code)
     end
   end
 
@@ -75,12 +76,13 @@ class MastermindGame
     puts "The available colours are #{COLOURS_FULL.join(', ')}"
   end
 
-  def end_game(black_pegs, rounds_played)
+  def end_game(black_pegs, rounds_played, correct_code)
     print "\nGame over! "
     if black_pegs == 4
       puts "#{code_guesser.to_s.capitalize} guessed the correct code in #{rounds_played} rounds."
     elsif rounds_played == MAX_ROUNDS
-      puts "#{code_guesser.to_s.capitalize} has exhausted all their chances with incorrect guesses"
+      puts "#{code_guesser.to_s.capitalize} has exhausted all their chances with incorrect guesses."
+      puts "The correct code was #{correct_code}..."
     else
       puts "The computer thinks you made a mistake giving feedback... There's no possible correct answer! Byebye :("
     end
