@@ -2,4 +2,5 @@
 
 source 'https://rubygems.org'
 
+gem 'rainbow'
 gem 'rubocop', require: false

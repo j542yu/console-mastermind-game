@@ -33,6 +33,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  rainbow
   rubocop
 
 BUNDLED WITH
