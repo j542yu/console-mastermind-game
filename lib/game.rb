@@ -44,7 +44,7 @@ class MastermindGame
 
   def display_guess(guess, rounds_played)
     puts "\nAttempt #{rounds_played}:"
-    puts "#{code_guesser.to_s.capitalize} guesses the code is #{guess.join}"
+    puts Rainbow("#{code_guesser.to_s.capitalize} guesses the code is #{guess.join}").red
   end
 
   def ask_for_feedback(correct_code, guess)
@@ -70,21 +70,25 @@ class MastermindGame
   end
 
   def start_game
-    print "\nLet's start the game! #{code_giver.to_s.capitalize} will "
-    print "create a secret code and #{code_guesser} must "
-    puts "guess it in #{MAX_ROUNDS} tries or less :>"
-    puts "The available colours are #{COLOURS_FULL.join(', ')}"
+    puts "\nLet's start the game!"
+    print Rainbow(code_giver.to_s.capitalize).bright
+    print ' will create a secret code and '
+    print Rainbow(code_guesser).bright
+    puts " must guess it in #{MAX_ROUNDS} tries or less :>"
+    puts "The available colours are #{COLOURS_DISPLAY}"
   end
 
   def end_game(black_pegs, rounds_played, correct_code)
-    print "\nGame over! "
+    print Rainbow("\nGame over!").yellow.bright
     if black_pegs == 4
-      puts "#{code_guesser.to_s.capitalize} guessed the correct code in #{rounds_played} rounds."
+      puts Rainbow(" #{code_guesser.to_s.capitalize} guessed the correct code in #{rounds_played} round(s).").green
     elsif rounds_played == MAX_ROUNDS
-      puts "#{code_guesser.to_s.capitalize} has exhausted all their chances with incorrect guesses."
-      puts "The correct code was #{correct_code}..."
+      puts Rainbow(" #{code_guesser.to_s.capitalize} has exhausted all their chances with incorrect guesses.").red
+      puts Rainbow("The correct code was '#{correct_code.join('')}'...").green.italic
     else
-      puts "The computer thinks you made a mistake giving feedback... There's no possible correct answer! Byebye :("
+      puts Rainbow(" The computer thinks you made a mistake giving feedback... There's no possible correct answer! " \
+      'Byebye :(')
+        .blue.italic
     end
   end
 end
