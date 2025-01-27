@@ -9,7 +9,7 @@ class HumanPlayer
   include GameConstants
 
   def initialize
-    puts Rainbow("\nGood greetings player, who are you?").darkblue.inverse
+    puts "\n#{Rainbow('Good greetings player, who are you?').white.bg(:darkblue)}"
     print '=> '
     @name = gets.chomp
   end
@@ -17,7 +17,8 @@ class HumanPlayer
   attr_reader :name
 
   def generate_code
-    puts Rainbow("\nAlright #{name}, create a four-letter code using any combination of these colours!\n").darkblue.inverse
+    puts "\n#{Rainbow("Alright #{name}, create a four-letter code using any combination of these colours!")
+      .white.bg(:darkblue)}\n"
 
     ask_for_colour_input
   end
@@ -36,8 +37,8 @@ class HumanPlayer
       is_valid_code = code.all? { |colour| COLOURS.include?(colour) } && code.length == 4
       return code if is_valid_code
 
-      puts Rainbow("\nInvalid input Your input must be four letters long and only include the given colours.")
-        .red.inverse
+      puts "\n#{Rainbow('Invalid input. Your input must be four letters long and only include the given colours.')
+        .white.bg(:red)}"
       puts 'Try again:'
     end
   end
@@ -46,16 +47,17 @@ class HumanPlayer
     puts Rainbow("Your secret code is #{code_given.join}").green
 
     puts 'For every letter (colour) that is in the right position, place down a black peg.'
-    puts Rainbow('How many black pegs will you place?').darkblue.inverse
+    puts Rainbow('How many black pegs will you place?').white.bg(:darkblue)
     black_pegs = ask_for_num_input
 
     puts "For any #{Rainbow('other').bright} letter (colour) that is somewhere in the secret code " \
     'but not in the right position, place down a white peg.'
-    puts Rainbow('How many white pegs will you place?').darkblue.inverse
+    puts Rainbow('How many white pegs will you place?').white.bg(:darkblue)
     white_pegs = ask_for_num_input
 
     while black_pegs + white_pegs > 4
-      puts Rainbow("\nHmm...There are at most 4 pegs in total. Please check your feedback and try again!").red.inverse
+      puts "\n#{Rainbow('Hmm...There are at most 4 pegs in total. Please check your feedback and try again!')
+        .white.bg(:red)}"
       black_pegs = ask_for_num_input
       white_pegs = ask_for_num_input
     end
@@ -67,9 +69,9 @@ class HumanPlayer
     loop do
       print '=> '
       input = gets.chomp
-      return input.to_i if %(0 1 2 3 4).include?(input)
+      return input.to_i if input != '' && %(0 1 2 3 4).include?(input)
 
-      puts Rainbow("\nInvalid feedback. Please enter an integer from 0 to 4").red.inverse
+      puts "\n#{Rainbow('Invalid feedback. Please enter an integer from 0 to 4').white.bg(:red)}"
     end
   end
 

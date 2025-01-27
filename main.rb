@@ -10,13 +10,14 @@ require_relative 'lib/game'
 puts Rainbow("Welcome to Mastermind!\n").yellow.bright
 puts 'In this game, one player creates a code and the ' \
 'other player must guess based on the feedback given.'
-puts Rainbow('Would you like to (c)reate the code or (g)uess the code? (c/g)').darkblue.inverse
+puts Rainbow('Would you like to (c)reate the code or (g)uess the code? (c/g)').white.bg(:darkblue)
 print '=> '
 
 human_player_role = gets.chomp.downcase
 
 until %w[c g x].include?(human_player_role)
-  puts Rainbow("\nInvalid role. Please type either 'c' to create, 'g' to guess, or 'x' to quit.").red.inverse.underline
+  puts "\n#{Rainbow("Invalid role. Please type either 'c' to create, 'g' to guess, or 'x' to quit.")
+    .white.bg(:red)}"
   print '=> '
   human_player_role = gets.chomp.downcase
 end
