@@ -17,21 +17,34 @@ class ComputerPlayer
     COLOURS.sample(4)
   end
 
-  def give_feedback(correct_code, guess) # rubocop:disable Metrics/MethodLength
-    black_pegs = 0
-    white_pegs = 0
-    correct_code_copy = correct_code.dup
+  def give_feedback(correct_code, guess)
+    [count_black_pegs(correct_code, guess), count_white_pegs(correct_code, guess)]
+  end
 
-    guess.each_with_index do |colour, idx|
-      if correct_code_copy[idx] == colour
-        black_pegs += 1
-        correct_code_copy[idx] = nil
-      elsif correct_code_copy.include?(colour)
-        white_pegs += 1
+  # one black peg for each exact colour match
+  def count_black_pegs(correct_code, guess)
+    correct_code.zip(guess).count { |c, g| c == g }
+  end
+
+  # one white peg for each colour that is in code but in wrong position
+  def count_white_pegs(correct_code, guess) # rubocop:disable Metrics/MethodLength
+    remaining_code = filter_remaining_colours(correct_code, guess)
+    remaining_guess = filter_remaining_colours(guess, correct_code)
+
+    remaining_guess.sum do |g|
+      idx = remaining_code.index(g)
+
+      if idx
+        remaining_code.delete_at(idx)
+        1
+      else
+        0
       end
     end
+  end
 
-    [black_pegs, white_pegs]
+  def filter_remaining_colours(source, target)
+    source.each_index.reject { |idx| source[idx] == target[idx] }.map { |idx| source[idx] }
   end
 
   # uses Swaszek algorithm
